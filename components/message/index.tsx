@@ -1,5 +1,7 @@
 import * as React from 'react';
 import Notification from 'rc-notification';
+import { getGlobalConfig } from '../config-provider';
+import { ConfigContext } from '../config-provider/context';
 import Icon from '../icon';
 
 let defaultDuration = 3;
@@ -79,19 +81,23 @@ function notice(args: ArgsProps): MessageType {
         <Icon type={iconType} theme={iconType === 'loading' ? 'outlined' : 'filled'} />
       );
       const switchIconNode = iconType ? iconNode : '';
+      const globalConfig = getGlobalConfig();
+
       instance.notice({
         key: target,
         duration,
         style: {},
         content: (
-          <div
-            className={`${prefixCls}-custom-content${
-              args.type ? ` ${prefixCls}-${args.type}` : ''
-            }`}
-          >
-            {args.icon ? args.icon : switchIconNode}
-            <span>{args.content}</span>
-          </div>
+          <ConfigContext.Provider value={globalConfig}>
+            <div
+              className={`${prefixCls}-custom-content${
+                args.type ? ` ${prefixCls}-${args.type}` : ''
+              }`}
+            >
+              {args.icon ? args.icon : switchIconNode}
+              <span>{args.content}</span>
+            </div>
+          </ConfigContext.Provider>
         ),
         onClose: callback,
       });

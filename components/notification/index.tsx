@@ -1,5 +1,7 @@
 import * as React from 'react';
 import Notification from 'rc-notification';
+import { getGlobalConfig } from '../config-provider';
+import { ConfigContext } from '../config-provider/context';
 import Icon from '../icon';
 
 export type NotificationPlacement = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
@@ -195,17 +197,21 @@ function notice(args: ArgsProps) {
       closeIcon,
     },
     (notification: any) => {
+      const globalConfig = getGlobalConfig();
+
       notification.notice({
         content: (
-          <div className={iconNode ? `${prefixCls}-with-icon` : ''}>
-            {iconNode}
-            <div className={`${prefixCls}-message`}>
-              {autoMarginTag}
-              {args.message}
+          <ConfigContext.Provider value={globalConfig}>
+            <div className={iconNode ? `${prefixCls}-with-icon` : ''}>
+              {iconNode}
+              <div className={`${prefixCls}-message`}>
+                {autoMarginTag}
+                {args.message}
+              </div>
+              <div className={`${prefixCls}-description`}>{args.description}</div>
+              {args.btn ? <span className={`${prefixCls}-btn`}>{args.btn}</span> : null}
             </div>
-            <div className={`${prefixCls}-description`}>{args.description}</div>
-            {args.btn ? <span className={`${prefixCls}-btn`}>{args.btn}</span> : null}
-          </div>
+          </ConfigContext.Provider>
         ),
         duration,
         closable: true,

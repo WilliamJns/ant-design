@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import { ConfigContext } from '../config-provider/context';
+import { getGlobalConfig } from '../config-provider';
 import Icon from '../icon';
 import Dialog, { ModalFuncProps, destroyFns, ModalProps } from './Modal';
 import ActionButton from './ActionButton';
@@ -76,51 +78,54 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
   );
 
   const iconNode = typeof icon === 'string' ? <Icon type={icon} /> : icon;
+  const globalConfig = getGlobalConfig();
 
   return (
-    <Dialog
-      prefixCls={prefixCls}
-      className={classString}
-      wrapClassName={classNames({ [`${contentPrefixCls}-centered`]: !!props.centered })}
-      onCancel={() => close({ triggerCancel: true })}
-      visible={visible}
-      title=""
-      transitionName={transitionName}
-      footer=""
-      maskTransitionName={maskTransitionName}
-      mask={mask}
-      maskClosable={maskClosable}
-      maskStyle={maskStyle}
-      style={style}
-      width={width}
-      zIndex={zIndex}
-      afterClose={afterClose}
-      keyboard={keyboard}
-      centered={centered}
-      getContainer={getContainer}
-    >
-      <div className={`${contentPrefixCls}-body-wrapper`}>
-        <div className={`${contentPrefixCls}-body`}>
-          {iconNode}
-          {props.title === undefined ? null : (
-            <span className={`${contentPrefixCls}-title`}>{props.title}</span>
-          )}
-          <div className={`${contentPrefixCls}-content`}>{props.content}</div>
+    <ConfigContext.Provider value={globalConfig}>
+      <Dialog
+        prefixCls={prefixCls}
+        className={classString}
+        wrapClassName={classNames({ [`${contentPrefixCls}-centered`]: !!props.centered })}
+        onCancel={() => close({ triggerCancel: true })}
+        visible={visible}
+        title=""
+        transitionName={transitionName}
+        footer=""
+        maskTransitionName={maskTransitionName}
+        mask={mask}
+        maskClosable={maskClosable}
+        maskStyle={maskStyle}
+        style={style}
+        width={width}
+        zIndex={zIndex}
+        afterClose={afterClose}
+        keyboard={keyboard}
+        centered={centered}
+        getContainer={getContainer}
+      >
+        <div className={`${contentPrefixCls}-body-wrapper`}>
+          <div className={`${contentPrefixCls}-body`}>
+            {iconNode}
+            {props.title === undefined ? null : (
+              <span className={`${contentPrefixCls}-title`}>{props.title}</span>
+            )}
+            <div className={`${contentPrefixCls}-content`}>{props.content}</div>
+          </div>
+          <div className={`${contentPrefixCls}-btns`}>
+            {cancelButton}
+            <ActionButton
+              type={okType}
+              actionFn={onOk}
+              closeModal={close}
+              autoFocus={autoFocusButton === 'ok'}
+              buttonProps={okButtonProps}
+            >
+              {okText}
+            </ActionButton>
+          </div>
         </div>
-        <div className={`${contentPrefixCls}-btns`}>
-          {cancelButton}
-          <ActionButton
-            type={okType}
-            actionFn={onOk}
-            closeModal={close}
-            autoFocus={autoFocusButton === 'ok'}
-            buttonProps={okButtonProps}
-          >
-            {okText}
-          </ActionButton>
-        </div>
-      </div>
-    </Dialog>
+      </Dialog>
+    </ConfigContext.Provider>
   );
 };
 
