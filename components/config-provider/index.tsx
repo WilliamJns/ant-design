@@ -2,7 +2,9 @@
 // SFC has specified a displayName, but not worked.
 /* eslint-disable react/display-name */
 import * as React from 'react';
-
+import message from '../message';
+import notification from '../notification';
+import modal from '../modal';
 import { RenderEmptyHandler } from './renderEmpty';
 import LocaleProvider, { Locale, ANT_MARK } from '../locale-provider';
 import LocaleReceiver from '../locale-provider/LocaleReceiver';
@@ -34,6 +36,12 @@ export interface ConfigProviderProps {
   };
 }
 
+let globalConfig: ConfigConsumerProps;
+
+export function getGlobalConfig(): ConfigConsumerProps {
+  return globalConfig;
+}
+
 class ConfigProvider extends React.Component<ConfigProviderProps> {
   getPrefixCls = (suffixCls: string, customizePrefixCls?: string) => {
     const { prefixCls = 'ant' } = this.props;
@@ -52,6 +60,7 @@ class ConfigProvider extends React.Component<ConfigProviderProps> {
       autoInsertSpaceInButton,
       locale,
       pageHeader,
+      prefixCls,
     } = this.props;
 
     const config: ConfigConsumerProps = {
@@ -71,6 +80,20 @@ class ConfigProvider extends React.Component<ConfigProviderProps> {
 
     if (pageHeader) {
       config.pageHeader = pageHeader;
+    }
+
+    globalConfig = config;
+
+    if (prefixCls !== undefined) {
+      notification.config({
+        prefixCls: `${prefixCls}-notification`,
+      });
+      message.config({
+        prefixCls: `${prefixCls}-message`,
+      });
+      modal.config({
+        prefixCls: `${prefixCls}-modal`,
+      });
     }
 
     return (
