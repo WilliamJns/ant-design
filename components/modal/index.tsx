@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Modal, { ModalFuncProps, destroyFns } from './Modal';
-import confirm from './confirm';
+import confirm, { confirmOptions } from './confirm';
 import Icon from '../icon';
 
 export { ActionButtonProps } from './ActionButton';
@@ -67,5 +67,7 @@ Modal.destroyAll = function destroyAllFn() {
     }
   }
 };
+
+Modal.config = confirmOptions;
 
 export default Modal;
