@@ -36,9 +36,9 @@ export interface ConfigProviderProps {
   };
 }
 
-let globalConfig: ConfigConsumerProps;
+let globalConfig: ConfigConsumerProps | undefined;
 
-export function getGlobalConfig(): ConfigConsumerProps {
+export function getGlobalConfig(): ConfigConsumerProps | undefined {
   return globalConfig;
 }
 
