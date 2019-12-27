@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import Icon from '../icon';
-import Dialog, { ModalFuncProps, destroyFns } from './Modal';
+import Dialog, { ModalFuncProps, destroyFns, ModalProps } from './Modal';
 import ActionButton from './ActionButton';
 import { getConfirmLocale } from './locale';
 import warning from '../_util/warning';
@@ -12,6 +12,8 @@ interface ConfirmDialogProps extends ModalFuncProps {
   close: (...args: any[]) => void;
   autoFocusButton?: null | 'ok' | 'cancel';
 }
+
+let defaultPrefixCls = 'ant-modal';
 
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
@@ -40,7 +42,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
   // 支持传入{ icon: null }来隐藏`Modal.confirm`默认的Icon
   const icon = props.icon === undefined ? iconType : props.icon;
   const okType = props.okType || 'primary';
-  const prefixCls = props.prefixCls || 'ant-modal';
+  const prefixCls = props.prefixCls || defaultPrefixCls;
   const contentPrefixCls = `${prefixCls}-confirm`;
   // 默认为 true，保持向下兼容
   const okCancel = 'okCancel' in props ? props.okCancel! : true;
@@ -121,6 +123,11 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
     </Dialog>
   );
 };
+
+export function confirmOptions(options: Partial<ModalProps>) {
+  const { prefixCls } = options;
+  if (prefixCls) defaultPrefixCls = prefixCls;
+}
 
 export default function confirm(config: ModalFuncProps) {
   const div = document.createElement('div');
