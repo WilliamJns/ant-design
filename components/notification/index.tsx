@@ -166,7 +166,7 @@ export interface ArgsProps {
 }
 
 function notice(args: ArgsProps) {
-  const outerPrefixCls = args.prefixCls ?? defaultPrefixCls;
+  const outerPrefixCls = args.prefixCls || defaultPrefixCls;
   const prefixCls = `${outerPrefixCls}-notice`;
   const duration = args.duration === undefined ? defaultDuration : args.duration;
 
