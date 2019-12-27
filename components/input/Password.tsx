@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import omit from 'omit.js';
+import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
 import Input, { InputProps } from './Input';
 import Icon from '../icon';
 
@@ -23,8 +24,6 @@ export default class Password extends React.Component<PasswordProps, PasswordSta
   input: HTMLInputElement;
 
   static defaultProps = {
-    inputPrefixCls: 'ant-input',
-    prefixCls: 'ant-input-password',
     action: 'click',
     visibilityToggle: true,
   };
@@ -42,8 +41,8 @@ export default class Password extends React.Component<PasswordProps, PasswordSta
     this.setState(({ visible }) => ({ visible: !visible }));
   };
 
-  getIcon() {
-    const { prefixCls, action } = this.props;
+  getIcon(prefixCls: string) {
+    const { action } = this.props;
     const iconTrigger = ActionMap[action!] || '';
     const iconProps = {
       [iconTrigger]: this.onChange,
@@ -77,29 +76,34 @@ export default class Password extends React.Component<PasswordProps, PasswordSta
     this.input.select();
   }
 
-  render() {
+  renderComponent = ({ getPrefixCls }: ConfigConsumerProps) => {
     const {
       className,
-      prefixCls,
-      inputPrefixCls,
+      prefixCls: customizePrefixCls,
       size,
       visibilityToggle,
       ...restProps
     } = this.props;
-    const suffixIcon = visibilityToggle && this.getIcon();
+
+    const prefixCls = getPrefixCls('input-password', customizePrefixCls);
+    const suffixIcon = visibilityToggle && this.getIcon(prefixCls);
     const inputClassName = classNames(prefixCls, className, {
       [`${prefixCls}-${size}`]: !!size,
     });
+
     return (
       <Input
         {...omit(restProps, ['suffix'])}
         type={this.state.visible ? 'text' : 'password'}
         size={size}
         className={inputClassName}
-        prefixCls={inputPrefixCls}
         suffix={suffixIcon}
         ref={this.saveInput}
       />
     );
+  };
+
+  render() {
+    return <ConfigConsumer>{this.renderComponent}</ConfigConsumer>;
   }
 }
