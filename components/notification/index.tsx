@@ -13,6 +13,7 @@ let defaultBottom = 24;
 let defaultPlacement: NotificationPlacement = 'topRight';
 let defaultGetContainer: () => HTMLElement;
 let defaultCloseIcon: React.ReactNode;
+let defaultPrefixCls: string = 'ant-notification';
 
 export interface ConfigProps {
   top?: number;
@@ -21,10 +22,11 @@ export interface ConfigProps {
   placement?: NotificationPlacement;
   getContainer?: () => HTMLElement;
   closeIcon?: React.ReactNode;
+  prefixCls?: string;
 }
 
 function setNotificationConfig(options: ConfigProps) {
-  const { duration, placement, bottom, top, getContainer, closeIcon } = options;
+  const { duration, placement, bottom, top, getContainer, closeIcon, prefixCls } = options;
   if (duration !== undefined) {
     defaultDuration = duration;
   }
@@ -42,6 +44,9 @@ function setNotificationConfig(options: ConfigProps) {
   }
   if (closeIcon !== undefined) {
     defaultCloseIcon = closeIcon;
+  }
+  if (prefixCls !== undefined) {
+    defaultPrefixCls = prefixCls;
   }
 }
 
@@ -159,7 +164,7 @@ export interface ArgsProps {
 }
 
 function notice(args: ArgsProps) {
-  const outerPrefixCls = args.prefixCls || 'ant-notification';
+  const outerPrefixCls = args.prefixCls ?? defaultPrefixCls;
   const prefixCls = `${outerPrefixCls}-notice`;
   const duration = args.duration === undefined ? defaultDuration : args.duration;
 
